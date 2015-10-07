@@ -18,10 +18,11 @@
       (loop :for i :from 0 :to 14
 	    :do (setf (aref tile-array i) img1))
 
-;;      (loop :for i :across tile-array
-;;	    :for p = (+ p 64)
-;;	    :do (sdl:draw-surface-at i #(p 0))))
-    	    (sdl:draw-surface-at img1 #(64 0)))
+      (loop :for i :from 0 :to 14
+	    :for range :from 0 :to 25 ;(/ 800 32)
+	    :for p = (* range 32)
+	    :for position = (sdl:point :x p :y 0)
+    	    :do (sdl:draw-surface-at (aref tile-array i) position)))
     
     (sdl:update-display)
 
