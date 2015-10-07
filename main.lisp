@@ -7,17 +7,24 @@
 (in-package :2d-game)
 
 (defun main-loop ()
+
   ;; init SDL, open window, and set up background gfx
   (sdl:with-init () 
     (sdl:window 800 600 :title-caption "2d Game test" )
     (setf (sdl:frame-rate) 25)
-    (let ((img1 (sdl:load-image "/home/ante/2dgame/tubes-tile.bmp" ))
+    (let ((img1 (sdl:load-image "/home/ante/src/2dgame/tubes-tile.bmp" ))
 	  (tile-array (make-array 15)))
-      (loop for i from 0 to 15
-	    do (setf (aref tile-array i) img1))
-      (loop for i from 0 to 15
-	    do (sdl:draw-surface-at img1 #(i 0))))
+
+      (loop :for i :from 0 :to 14
+	    :do (setf (aref tile-array i) img1))
+
+;;      (loop :for i :across tile-array
+;;	    :for p = (+ p 64)
+;;	    :do (sdl:draw-surface-at i #(p 0))))
+    	    (sdl:draw-surface-at img1 #(64 0)))
+    
     (sdl:update-display)
+
     ;; the event loop after setup
     (sdl:with-events ()
       (:key-down-event ()
