@@ -1,7 +1,7 @@
 (asdf:load-system "lispbuilder-sdl")
 
 (defpackage :2d-game
-  (:use :lispbuilder-sdl :lispbuilder-sdl-gfx :cl)
+  (:use :lispbuilder-sdl :cl)
   (:export :main-loop))
 
 (in-package :2d-game)
