@@ -24,9 +24,11 @@
     (let ((img1 (sdl:load-image "/home/ante/src/2dgame/tubes-tile.bmp" ))
 	  (tile-array (make-array *row-width*)))
 
+      ;; fill the screen map array with tiles
       (loop :for i :from 0 :to (1- *row-width*)
 	    :do (setf (aref tile-array i) img1))
 
+      ;; map the screen map array to the window
       (loop :for i :from 0 :to (1- *row-width*)
 	    :for range :from 0 :to (1- *row-width*)
 	    :for p = (* range *tile-size*)
