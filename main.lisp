@@ -10,6 +10,8 @@
 (defparameter *width* 800)
 (defparameter *height* 600)
 (defparameter *row-width* (/ *width* *tile-size*))
+(defparameter *row-height* (round (coerce (/ *height* *tile-size*) 'float)))
+;;(defparameter *row-height* (/ *height* *tile-size*))
 (defparameter *tile-array* (make-array *row-width*))
 
 (defclass tile ()
@@ -43,11 +45,13 @@
 	    :do (setf (aref *tile-array* i) img1))
       
        ;; map the screen map array to the window
-      (loop :for range :from 0 :to (1- *row-width*)
- 	    :for p = (* range *tile-size*)
-	    :for position = (sdl:point :x p :y 0)
-	    :for image = (tile-surface (aref *tile-array* range))
-     	    :do (sdl:draw-surface-at image position)))
+      (loop :for lines :from 0 :to (1- *row-height*)
+	    ;; draw each horizontal line
+	    :do (loop :for range :from 0 :to (1- *row-width*)
+		      :for p = (* range *tile-size*)
+		      :for position = (sdl:point :x p :y (* *tile-size* lines))
+		      :for image = (tile-surface (aref *tile-array* range))
+		      :do (sdl:draw-surface-at image position)))
 
     (sdl:update-display)
 
@@ -59,4 +63,4 @@
       
       (:video-expose-event () (sdl:update-display))
 ;      (:idle () (sdl:clear-display sdl:*black*))
-      (:quit-event () t))))
+      (:quit-event () t)))))
