@@ -21,7 +21,16 @@
    (surface :initarg :surface
 	    :accessor tile-surface
 	    :documentation "The SDL Surface we will map to screen")))
-   
+
+;;; To make array of symbols pointing to tile objects work an accessor
+;;; function is needed to eval the found symbol. Otherwise we will
+;;; have multiple instances of the same tile bitmap in
+;;; memory. Bundgaard reminded me of SYMBOL-VALUE.
+;;;
+;;; e.g.
+(defmacro lookup (my-array my-key)
+  `(symbol-value `,(aref ,my-array ,my-key)))
+
 (defun main-loop ()
 "MAIN-LOOP init SDL, open the window and runs the main event loop."
   ;; init SDL, open window, and set up background gfx
@@ -43,6 +52,14 @@
       ;; a bit boring, since it's all one tile
       (loop :for i :from 0 :to (1- *row-width*)
 	    :do (setf (aref *tile-array* i) img1))
+
+      (with-open-file (f "/home/ante/src/2dgame/rows.data"
+			 :direction :output
+			 :if-exists :overwrite
+			 :if-does-not-exist :create)
+	(loop :for i :from 0 :to (1- *row-width*)
+	      :do (format f "~A " (aref *tile-array* i))))
+			 
       
        ;; map the screen map array to the window
       (loop :for lines :from 0 :to (1- *row-height*)
