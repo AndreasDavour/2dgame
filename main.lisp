@@ -32,6 +32,7 @@
   `(symbol-value `,(aref ,my-array ,my-key)))
 
 (defun load-screen-map ()
+  "Load specified graphics tiles into a map array for the screen."
   (let ((img1 (make-instance
 	       'tile :name "tubes-tile"
 		     :surface (sdl:load-image "/home/ante/src/2dgame/assets/tubes-tile.bmp" )))
@@ -50,6 +51,12 @@
 	      (loop :for p :from 0 :to (1- *row-width*)
 		    :do (setf (aref *tile-array* i p) img1)))))
 
+(defun verify-screen-array ()
+  "Verify the screen array by printing it out."
+  (loop :for i :from 0 :to (1- *row-height*)
+	:do (format t "pos: ~A X: ~A~%" i (aref *tile-array* i 0))
+	    (loop :for p :from 0 :to (1- *row-width*)
+		  :do (format t "X: ~A Y: ~A::~A~%" i p (aref *tile-array* i p)))))
 
 (defun main-loop ()
 "MAIN-LOOP init SDL, open the window and runs the main event loop."
@@ -57,16 +64,7 @@
   (sdl:with-init () 
     (sdl:window *width* *height* :title-caption "2d Game test" )
     (setf (sdl:frame-rate) 25)
-
     (load-screen-map)
-
-      ;; verify the loop above by printing it out
-;;;       (loop :for i :from 0 :to (1- *row-height*)
-;;; 	    :do (format t "pos: ~A X: ~A~%" i (aref *tile-array* i 0))
-;;; 		(loop :for p :from 0 :to (1- *row-width*)
-;;; 		      :do (format t "X: ~A Y: ~A::~A~%" i p (aref *tile-array* i p))))
-
-
     
        ;; map the screen map array to the window
        (loop :for lines :from 0 :to (1- *row-height*)
