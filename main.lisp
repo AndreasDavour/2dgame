@@ -31,6 +31,26 @@
 (defmacro lookup (my-array my-key)
   `(symbol-value `,(aref ,my-array ,my-key)))
 
+(defun load-screen-map ()
+  (let ((img1 (make-instance
+	       'tile :name "tubes-tile"
+		     :surface (sdl:load-image "/home/ante/src/2dgame/assets/tubes-tile.bmp" )))
+	(img2 (make-instance
+	       'tile :name "tubes-with-bar-end-right-tile"
+		     :surface (sdl:load-image "/home/ante/src/2dgame/assets/tubes-with-bar-end-right-tile.bmp")))
+	(img3 (make-instance
+	       'tile :name "tubes-with-bar-tile"
+		     :surface (sdl:load-image "/home/ante/src/2dgame/assets/tubes-with-bar-tile.bmp"))))
+    
+    ;; fill the screen map array with tiles
+    ;; a bit boring, since it's all one tile
+    (loop :for i :from 0 :to (1- *row-height*)
+	  :do (setf (aref *tile-array* i 0) img1)
+	      ;; then the rows
+	      (loop :for p :from 0 :to (1- *row-width*)
+		    :do (setf (aref *tile-array* i p) img1)))))
+
+
 (defun main-loop ()
 "MAIN-LOOP init SDL, open the window and runs the main event loop."
   ;; init SDL, open window, and set up background gfx
@@ -38,23 +58,7 @@
     (sdl:window *width* *height* :title-caption "2d Game test" )
     (setf (sdl:frame-rate) 25)
 
-    (let ((img1 (make-instance
-		 'tile :name "tubes-tile"
-		       :surface (sdl:load-image "/home/ante/src/2dgame/assets/tubes-tile.bmp" )))
-	  (img2 (make-instance
-		 'tile :name "tubes-with-bar-end-right-tile"
-		       :surface (sdl:load-image "/home/ante/src/2dgame/assets/tubes-with-bar-end-right-tile.bmp")))
-	  (img3 (make-instance
-		 'tile :name "tubes-with-bar-tile"
-		       :surface (sdl:load-image "/home/ante/src/2dgame/assets/tubes-with-bar-tile.bmp"))))
-
-      ;; fill the screen map array with tiles
-      ;; a bit boring, since it's all one tile
-      (loop :for i :from 0 :to (1- *row-height*)
-	    :do (setf (aref *tile-array* i 0) img1)
-		;; then the rows
-		(loop :for p :from 0 :to (1- *row-width*)
-		      :do (setf (aref *tile-array* i p) img1)))
+    (load-screen-map)
 
       ;; verify the loop above by printing it out
 ;;;       (loop :for i :from 0 :to (1- *row-height*)
@@ -62,6 +66,8 @@
 ;;; 		(loop :for p :from 0 :to (1- *row-width*)
 ;;; 		      :do (format t "X: ~A Y: ~A::~A~%" i p (aref *tile-array* i p))))
 
+
+    
        ;; map the screen map array to the window
        (loop :for lines :from 0 :to (1- *row-height*)
  	    ;; draw each horizontal line
