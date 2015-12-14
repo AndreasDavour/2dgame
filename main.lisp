@@ -22,15 +22,6 @@
 	    :accessor tile-surface
 	    :documentation "The SDL Surface we will map to screen")))
 
-;;; To make array of symbols pointing to tile objects work an accessor
-;;; function is needed to eval the found symbol. Otherwise we will
-;;; have multiple instances of the same tile bitmap in
-;;; memory. Bundgaard reminded me of SYMBOL-VALUE.
-;;;
-;;; e.g.
-(defmacro lookup (my-array my-key)
-  `(symbol-value `,(aref ,my-array ,my-key)))
-
 (defun load-screen-map ()
   "Load specified graphics tiles into a map array for the screen."
   (let ((img1 (make-instance
