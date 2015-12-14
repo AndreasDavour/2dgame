@@ -1,3 +1,8 @@
+;;;;
+;;;; A very basic POF for a 2d platform game, in the old C64 style.
+;;;;
+
+;;; set up the system
 (asdf:load-system "lispbuilder-sdl")
 
 (defpackage :2d-game
@@ -6,6 +11,10 @@
 
 (in-package :2d-game)
 
+;;;
+;;; some static global data
+;;; maybe some of this should migrate to a config file later on.
+;;;
 (defparameter *tile-size* 32)
 (defparameter *width* 800)
 (defparameter *height* 600)
@@ -14,6 +23,11 @@
 ;;(defparameter *row-height* (/ *height* *tile-size*))
 (defparameter *tile-array* (make-array (list *row-height* *row-width*)))
 
+;;;
+;;; defining classes needed
+;;;
+;;; TODO:
+;;;      break this out into its own file
 (defclass tile ()
   ((name :initarg :name
 	 :accessor tile-name
@@ -22,6 +36,11 @@
 	    :accessor tile-surface
 	    :documentation "The SDL Surface we will map to screen")))
 
+;;;
+;;; helper functions for MAIN-LOOP
+;;;
+;;; TODO:
+;;;      break this out into its own file
 (defun load-screen-map ()
   "Load specified graphics tiles into a map array for the screen."
   (let ((img1 (make-instance
@@ -49,6 +68,9 @@
 	    (loop :for p :from 0 :to (1- *row-width*)
 		  :do (format t "X: ~A Y: ~A::~A~%" i p (aref *tile-array* i p)))))
 
+;;;
+;;; MAIN LOOP
+;;;
 (defun main-loop ()
 "MAIN-LOOP init SDL, open the window and runs the main event loop."
   ;; init SDL, open window, and set up background gfx
