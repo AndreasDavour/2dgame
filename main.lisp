@@ -12,7 +12,7 @@
 (defparameter *row-width* (/ *width* *tile-size*))
 (defparameter *row-height* (round (coerce (/ *height* *tile-size*) 'float)))
 ;;(defparameter *row-height* (/ *height* *tile-size*))
-(defparameter *tile-array* (make-array *row-width*))
+(defparameter *tile-array* (make-array (list *row-height* *row-width*)))
 
 (defclass tile ()
   ((name :initarg :name
@@ -50,25 +50,26 @@
 
       ;; fill the screen map array with tiles
       ;; a bit boring, since it's all one tile
-      (loop :for i :from 0 :to (1- *row-width*)
-	    :do (setf (aref *tile-array* i) img1))
+      (loop :for i :from 0 :to (1- *row-height*)
+	    :do (setf (aref *tile-array* i 0) img1)
+		;; then the rows
+		(loop :for p :from 0 :to (1- *row-width*)
+		      :do (setf (aref *tile-array* i p) img1)))
 
-      (with-open-file (f "/home/ante/src/2dgame/rows.data"
-			 :direction :output
-			 :if-exists :overwrite
-			 :if-does-not-exist :create)
-	(loop :for i :from 0 :to (1- *row-width*)
-	      :do (format f "~A " (aref *tile-array* i))))
-			 
-      
+      ;; verify the loop above by printing it out
+;;;       (loop :for i :from 0 :to (1- *row-height*)
+;;; 	    :do (format t "pos: ~A X: ~A~%" i (aref *tile-array* i 0))
+;;; 		(loop :for p :from 0 :to (1- *row-width*)
+;;; 		      :do (format t "X: ~A Y: ~A::~A~%" i p (aref *tile-array* i p))))
+
        ;; map the screen map array to the window
-      (loop :for lines :from 0 :to (1- *row-height*)
-	    ;; draw each horizontal line
-	    :do (loop :for range :from 0 :to (1- *row-width*)
-		      :for p = (* range *tile-size*)
-		      :for position = (sdl:point :x p :y (* *tile-size* lines))
-		      :for image = (tile-surface (aref *tile-array* range))
-		      :do (sdl:draw-surface-at image position)))
+       (loop :for lines :from 0 :to (1- *row-height*)
+ 	    ;; draw each horizontal line
+ 	    :do (loop :for width-range :from 0 :to (1- *row-width*)
+ 		      :for x = (* width-range *tile-size*)
+ 		      :for position = (sdl:point :x x :y (* *tile-size* lines))
+ 		      :for image = (tile-surface (aref *tile-array* lines width-range))
+ 		      :do (sdl:draw-surface-at image position)))
 
     (sdl:update-display)
 
